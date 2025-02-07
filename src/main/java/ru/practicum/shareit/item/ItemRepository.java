@@ -38,6 +38,14 @@ public class ItemRepository {
                 .toList();
     }
 
+    public Collection<Item> searchItems(String text) {
+        return items.values().stream()
+                .filter(item -> item.getAvailable().equals(true) &&
+                        item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                        item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                .toList();
+    }
+
     private long generateNewId() {
         return id++;
     }

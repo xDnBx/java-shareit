@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -52,5 +53,11 @@ public class ItemController {
     public Collection<ItemDto> getAllItemsByOwner(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на получение списка всех вещей пользователя с id = {}", userId);
         return itemService.getAllItemsByOwner(userId);
+    }
+
+    @GetMapping("/search")
+    public Collection<ItemDto> searchItems(@RequestParam String text, @RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.info("Запрос на поиск вещей пользователя с id = {} с текстом '{}'", userId, text);
+        return itemService.searchItems(text);
     }
 }

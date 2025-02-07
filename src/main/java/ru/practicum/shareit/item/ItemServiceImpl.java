@@ -8,6 +8,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Slf4j
@@ -34,10 +35,16 @@ public class ItemServiceImpl implements ItemService {
             log.error("Пользователь с id = {} не владелец вещи с id = {}", userId, itemId);
             throw new NotFoundException("Редактировать может только владелец вещи");
         }
-
-        item.setName(dto.getName());
-        item.setDescription(dto.getDescription());
-        item.setAvailable(dto.getAvailable());
+        log.debug("Обновление вещи с id = {} пользователя с id = {}", itemId, userId);
+        if (dto.getName() != null && !dto.getName().isBlank()) {
+            item.setName(dto.getName());
+        }
+        if (dto.getDescription() != null && !dto.getDescription().isBlank()) {
+            item.setDescription(dto.getDescription());
+        }
+        if (dto.getAvailable() != null) {
+            item.setAvailable(dto.getAvailable());
+        }
         return ItemMapper.toItemDto(itemRepository.updateItem(item));
     }
 
@@ -49,7 +56,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Collection<ItemDto> getAllItemsByOwner(Long id) {
+        log.debug("Получение списка всех вещей пользовтеля с id = {}", id);
         return itemRepository.getAllItemsByOwner(id).stream()
+                .map(ItemMapper::toItemDto)
+                .toList();
+    }
+
+    @Override
+    public Collection<ItemDto> searchItems(String text) {
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        }
+        log.debug("Получение списка доступных вещей с текстом '{}'", text);
+        return itemRepository.searchItems(text).stream()
                 .map(ItemMapper::toItemDto)
                 .toList();
     }
