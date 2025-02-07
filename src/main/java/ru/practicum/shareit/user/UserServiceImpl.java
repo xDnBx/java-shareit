@@ -25,9 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto dto) {
-        log.debug("Добавление нового пользователя с именем: {}", dto.getName());
-        User user = User.builder().name(dto.getName()).email(dto.getEmail()).build();
         checkEmail(dto);
+        log.debug("Добавление нового пользователя с именем: {}", dto.getName());
+        User user = UserMapper.toUser(dto);
         return UserMapper.toUserDto(userRepository.createUser(user));
     }
 

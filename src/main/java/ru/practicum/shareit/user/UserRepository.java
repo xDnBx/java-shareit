@@ -26,7 +26,6 @@ public class UserRepository {
     }
 
     public User updateUser(User newUser) {
-        checkUser(newUser.getId());
         users.put(newUser.getId(), newUser);
         log.info("Обновление пользователя с id = {} прошло успешно!", newUser.getId());
         return newUser;
