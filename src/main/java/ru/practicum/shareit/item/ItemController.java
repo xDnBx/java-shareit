@@ -18,10 +18,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
