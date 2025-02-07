@@ -17,10 +17,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -43,7 +39,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public UserDto updateUser(@PathVariable Long id, @RequestBody UserDto dto) {
-        log.info("Запрос на обновление пользователя с id = {}", dto.getId());
+        log.info("Запрос на обновление пользователя с id = {}", id);
         return userService.updateUser(id, dto);
     }
 
