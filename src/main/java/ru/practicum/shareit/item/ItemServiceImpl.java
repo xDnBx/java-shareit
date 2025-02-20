@@ -20,7 +20,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Long userId, ItemDto dto) {
-        userRepository.getUserById(userId);
+        userRepository.findById(userId);
         log.debug("Добавление новой вещи с именем: {} пользователю с id = {}", dto.getName(), userId);
         Item item = ItemMapper.toItem(dto);
         item.setOwnerId(userId);
