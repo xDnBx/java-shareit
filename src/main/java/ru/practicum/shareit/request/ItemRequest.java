@@ -3,6 +3,7 @@ package ru.practicum.shareit.request;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,6 @@ import java.time.LocalDateTime;
 public class ItemRequest {
     Long id;
     String description;
-    Long requestorId;
+    User requestor;
     LocalDateTime created;
 }

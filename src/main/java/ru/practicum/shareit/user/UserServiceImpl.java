@@ -34,10 +34,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(Long userId, UserDto dto) {
-        checkEmail(dto);
         User user = UserMapper.toUser(getUserById(userId));
         log.debug("Обновление пользователя с id = {}", userId);
         if (dto.getName() != null && !dto.getName().isBlank()) {
+            checkEmail(dto);
             user.setName(dto.getName());
         }
         if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
