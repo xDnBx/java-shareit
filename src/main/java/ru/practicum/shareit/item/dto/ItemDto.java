@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.user.User;
 
 @Data
@@ -20,4 +21,6 @@ public class ItemDto {
     @NotNull
     Boolean available;
     User owner;
+    BookingDto lastBooking;
+    BookingDto nextBooking;
 }

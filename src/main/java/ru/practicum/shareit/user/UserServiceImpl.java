@@ -4,6 +4,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto createUser(UserDto dto) {
         checkEmail(dto);
         log.debug("Добавление нового пользователя с именем: {}", dto.getName());
@@ -33,9 +35,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Long userId, UserDto dto) {
-        User user = UserMapper.toUser(getUserById(userId));
-        log.debug("Обновление пользователя с id = {}", userId);
+    @Transactional
+    public UserDto updateUser(Long id, UserDto dto) {
+        User user = UserMapper.toUser(getUserById(id));
+        log.debug("Обновление пользователя с id = {}", id);
         if (dto.getName() != null && !dto.getName().isBlank()) {
             checkEmail(dto);
             user.setName(dto.getName());
@@ -55,6 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         getUserById(id);
         log.debug("Удаление пользователя с id = {}", id);

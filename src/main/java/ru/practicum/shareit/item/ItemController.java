@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.Collection;
@@ -27,20 +28,23 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto createItem(@Valid @RequestBody ItemDto dto, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ItemDto createItem(@Valid @RequestBody ItemDto dto,
+                              @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на добавление новой вещи: {} пользователю с id = {}", dto.getName(), userId);
         return itemService.createItem(userId, dto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@PathVariable Long itemId, @RequestBody ItemDto dto,
+    public ItemDto updateItem(@PathVariable Long itemId,
+                              @RequestBody ItemDto dto,
                               @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на обновление вещи с id = {} у пользователя с id = {}", dto.getId(), userId);
         return itemService.updateItem(itemId, dto, userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ItemDto getItemById(@PathVariable Long itemId,
+                               @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на получение вещи с id = {} у пользователя с id = {}", itemId, userId);
         return itemService.getItemById(itemId);
     }
@@ -52,8 +56,19 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> searchItems(@RequestParam String text, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public Collection<ItemDto> searchItems(@RequestParam String text,
+                                           @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на поиск вещей пользователя с id = {} с текстом '{}'", userId, text);
         return itemService.searchItems(text);
     }
+
+    @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDto createComment(@Valid @RequestBody CommentDto dto,
+                                    @RequestHeader("X-Sharer-User-Id") Long userId,
+                                    @PathVariable Long itemId) {
+        log.info("Запрос на добавление комментария к вещи с id = {} пользователем с id = {}", itemId, userId);
+        return itemService.createComment(itemId, userId, dto);
+    }
+
 }
