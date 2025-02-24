@@ -65,22 +65,24 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto getItemById(Long id) {
         Item item = checkItem(id);
         BookingDto lastBooking = bookingRepository
-                .findTopByItemIdAndEndBeforeAndStatusOrderByEndDesc(id, LocalDateTime.now(), BookingStatus.APPROVED)
+                .findTopByItemIdAndEndBeforeAndStatusOrderByEndDesc(id, LocalDateTime.now().minusSeconds(2),
+                        BookingStatus.APPROVED)
                 .map(BookingMapper::toBookingDto)
                 .orElse(null);
         BookingDto nextBooking = bookingRepository
                 .findTopByItemIdAndStartAfterOrderByStartAsc(id, LocalDateTime.now())
                 .map(BookingMapper::toBookingDto)
                 .orElse(null);
+        Collection<Comment> comments = commentRepository.findAllByItemId(id).stream().toList();
 
-        return ItemMapper.toItemDtoBooking(item, lastBooking, nextBooking);
+        return ItemMapper.toItemDtoBooking(item, lastBooking, nextBooking, comments);
     }
 
     @Override
     public Collection<ItemDto> getAllItemsByOwner(Long id) {
         log.debug("Получение списка всех вещей пользователя с id = {}", id);
         return itemRepository.findAllByOwner(getUserById(id)).stream()
-                .map(ItemMapper::toItemDto)
+                .map(item -> getItemById(item.getId()))
                 .toList();
     }
 
@@ -100,7 +102,7 @@ public class ItemServiceImpl implements ItemService {
         User user = getUserById(userId);
         Item item = checkItem(itemId);
         Comment comment = CommentMapper.toComment(dto, user, item);
-        Collection<Booking> bookings = bookingRepository.findBookingByItemIdAndBookerIdAndEndBefore(
+        Collection<Booking> bookings = bookingRepository.findAllByItemIdAndBookerIdAndEndBefore(
                 itemId, userId , LocalDateTime.now());
 
         if (bookings.isEmpty()) {

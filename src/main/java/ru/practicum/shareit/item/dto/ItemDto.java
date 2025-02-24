@@ -7,7 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.user.User;
+
+import java.util.Collection;
 
 @Data
 @Builder
@@ -23,4 +26,5 @@ public class ItemDto {
     User owner;
     BookingDto lastBooking;
     BookingDto nextBooking;
+    Collection<Comment> comments;
 }
