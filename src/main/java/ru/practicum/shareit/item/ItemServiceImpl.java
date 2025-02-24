@@ -103,7 +103,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = checkItem(itemId);
         Comment comment = CommentMapper.toComment(dto, user, item);
         Collection<Booking> bookings = bookingRepository.findAllByItemIdAndBookerIdAndEndBefore(
-                itemId, userId , LocalDateTime.now());
+                itemId, userId, LocalDateTime.now());
 
         if (bookings.isEmpty()) {
             throw new ValidationException("Отзыв может оставлять только пользователь, который арендовал ранее эту вещь");
