@@ -11,14 +11,12 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.User;
-
-import java.util.Objects;
 
 @Entity
 @Builder
@@ -27,7 +25,7 @@ import java.util.Objects;
 @Table(name = "items")
 @Getter
 @Setter
-@ToString
+@EqualsAndHashCode(of = "id")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Item {
     @Id
@@ -43,16 +41,4 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     User owner;
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return Objects.equals(id, item.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }

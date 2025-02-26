@@ -1,24 +1,43 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import ru.practicum.shareit.item.Item;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    Collection<Booking> findByBookerIdOrderByStartDesc(Long userId);
+    Collection<Booking> findAllByBookerId(Long userId, Sort sort);
 
-    Collection<Booking> findByBookerIdAndStatusOrderByStartDesc(Long bookerId, BookingStatus status);
+    Collection<Booking> findAllByBookerIdAndEndAfter(Long userId, LocalDateTime now, Sort sort);
 
-    Collection<Booking> findByItemOwnerIdOrderByStartDesc(Long userId);
+    Collection<Booking> findAllByBookerIdAndEndBefore(Long userId, LocalDateTime now, Sort sort);
 
-    Collection<Booking> findByItemOwnerIdAndStatusOrderByStartDesc(Long bookerId, BookingStatus status);
+    Collection<Booking> findAllByBookerIdAndStartAfter(Long userId, LocalDateTime now, Sort sort);
 
-    Optional<Booking> findTopByItemIdAndEndBeforeAndStatusOrderByEndDesc(Long itemId, LocalDateTime now,
-                                                                         BookingStatus status);
+    Collection<Booking> findAllByBookerIdAndStatus(Long bookerId, BookingStatus status, Sort sort);
 
-    Optional<Booking> findTopByItemIdAndStartAfterOrderByStartAsc(Long itemId, LocalDateTime now);
+    Collection<Booking> findAllByItemOwnerId(Long userId, Sort sort);
+
+    Collection<Booking> findAllByItemOwnerIdAndEndAfter(Long userId, LocalDateTime now, Sort sort);
+
+    Collection<Booking> findAllByItemOwnerIdAndEndBefore(Long userId, LocalDateTime now, Sort sort);
+
+    Collection<Booking> findAllByItemOwnerIdAndStartAfter(Long userId, LocalDateTime now, Sort sort);
+
+    Collection<Booking> findAllByItemOwnerIdAndStatus(Long bookerId, BookingStatus status, Sort sort);
+
+    Optional<Booking> findTopByItemIdAndItemOwnerIdAndEndBeforeAndStatusOrderByEndDesc(Long itemId, Long ownerId,
+                                                                                       LocalDateTime now,
+                                                                                       BookingStatus status);
+
+    Optional<Booking> findTopByItemIdAndItemOwnerIdAndStartAfterOrderByStartAsc(Long itemId, Long ownerId,
+                                                                                LocalDateTime now);
 
     Collection<Booking> findAllByItemIdAndBookerIdAndEndBefore(Long itemId, Long bookerId, LocalDateTime now);
+
+    List<Booking> findAllByItemInAndStatusOrderByStartAsc(List<Item> items, BookingStatus status);
 }

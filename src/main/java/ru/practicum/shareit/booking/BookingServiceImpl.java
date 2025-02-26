@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -14,6 +15,7 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Slf4j
@@ -66,13 +68,20 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Collection<BookingDto> getBookingsByUser(Long userId, String state) {
         getUserById(userId);
-        BookingStatus status = checkBooking(state);
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+        LocalDateTime now = LocalDateTime.now();
         Collection<Booking> bookings;
 
-        if (status == null) {
-            bookings = bookingRepository.findByBookerIdOrderByStartDesc(userId);
-        } else {
-            bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, status);
+        switch (state.toUpperCase()) {
+            case "ALL" -> bookings = bookingRepository.findAllByBookerId(userId, sort);
+            case "CURRENT" -> bookings = bookingRepository.findAllByBookerIdAndEndAfter(userId, now, sort);
+            case "PAST" -> bookings = bookingRepository.findAllByBookerIdAndEndBefore(userId, now, sort);
+            case "FUTURE" -> bookings = bookingRepository.findAllByBookerIdAndStartAfter(userId, now, sort);
+            case "WAITING" ->
+                    bookings = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING, sort);
+            case "REJECTED" ->
+                    bookings = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED, sort);
+            default -> throw new IllegalArgumentException("Неверный параметр 'state'");
         }
 
         return bookings.stream()
@@ -83,13 +92,20 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Collection<BookingDto> getBookingsByOwner(Long userId, String state) {
         getUserById(userId);
-        BookingStatus status = checkBooking(state);
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+        LocalDateTime now = LocalDateTime.now();
         Collection<Booking> bookings;
 
-        if (status == null) {
-            bookings = bookingRepository.findByItemOwnerIdOrderByStartDesc(userId);
-        } else {
-            bookings = bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(userId, status);
+        switch (state.toUpperCase()) {
+            case "ALL" -> bookings = bookingRepository.findAllByItemOwnerId(userId, sort);
+            case "CURRENT" -> bookings = bookingRepository.findAllByItemOwnerIdAndEndAfter(userId, now, sort);
+            case "PAST" -> bookings = bookingRepository.findAllByItemOwnerIdAndEndBefore(userId, now, sort);
+            case "FUTURE" -> bookings = bookingRepository.findAllByItemOwnerIdAndStartAfter(userId, now, sort);
+            case "WAITING" ->
+                    bookings = bookingRepository.findAllByItemOwnerIdAndStatus(userId, BookingStatus.WAITING, sort);
+            case "REJECTED" ->
+                    bookings = bookingRepository.findAllByItemOwnerIdAndStatus(userId, BookingStatus.REJECTED, sort);
+            default -> throw new IllegalArgumentException("Неверный параметр 'state'");
         }
 
         return bookings.stream()
@@ -135,16 +151,5 @@ public class BookingServiceImpl implements BookingService {
             log.error("id не указан");
             throw new ValidationException("id должен быть указан");
         }
-    }
-
-    private BookingStatus checkBooking(String state) {
-        return switch (state.toUpperCase()) {
-            case "CURRENT" -> BookingStatus.CURRENT;
-            case "PAST" -> BookingStatus.PAST;
-            case "FUTURE" -> BookingStatus.FUTURE;
-            case "WAITING" -> BookingStatus.WAITING;
-            case "REJECTED" -> BookingStatus.REJECTED;
-            default -> null;
-        };
     }
 }

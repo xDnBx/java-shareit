@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoInput;
 
 import java.util.Collection;
 
@@ -28,7 +29,7 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto createItem(@Valid @RequestBody ItemDto dto,
+    public ItemDto createItem(@Valid @RequestBody ItemDtoInput dto,
                               @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на добавление новой вещи: {} пользователю с id = {}", dto.getName(), userId);
         return itemService.createItem(userId, dto);
@@ -36,7 +37,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@PathVariable Long itemId,
-                              @RequestBody ItemDto dto,
+                              @RequestBody ItemDtoInput dto,
                               @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на обновление вещи с id = {} у пользователя с id = {}", dto.getId(), userId);
         return itemService.updateItem(itemId, dto, userId);
@@ -46,7 +47,7 @@ public class ItemController {
     public ItemDto getItemById(@PathVariable Long itemId,
                                @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на получение вещи с id = {} у пользователя с id = {}", itemId, userId);
-        return itemService.getItemById(itemId);
+        return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
