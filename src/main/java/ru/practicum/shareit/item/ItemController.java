@@ -39,7 +39,7 @@ public class ItemController {
     public ItemDto updateItem(@PathVariable Long itemId,
                               @RequestBody ItemDtoInput dto,
                               @RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Запрос на обновление вещи с id = {} у пользователя с id = {}", dto.getId(), userId);
+        log.info("Запрос на обновление вещи с id = {} у пользователя с id = {}", itemId, userId);
         return itemService.updateItem(itemId, dto, userId);
     }
 

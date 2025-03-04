@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 @Entity
@@ -41,4 +42,8 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     User owner;
+
+    @ManyToOne
+    @JoinColumn(name = "request_id", nullable = false)
+    ItemRequest itemRequest;
 }
