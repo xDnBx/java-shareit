@@ -1,6 +1,5 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.user.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentDto {
-    @NotEmpty
-    String text;
+public class UserDtoUpdate {
+    String name;
+    String email;
 }

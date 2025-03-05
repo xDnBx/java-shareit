@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDtoInput;
+import ru.practicum.shareit.item.dto.ItemDto;
 
 @Slf4j
 @RestController
@@ -27,7 +27,7 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Object> createItem(@Valid @RequestBody ItemDtoInput dto,
+    public ResponseEntity<Object> createItem(@Valid @RequestBody ItemDto dto,
                                              @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на добавление новой вещи: {} пользователю с id = {}", dto.getName(), userId);
         return itemClient.createItem(userId, dto);
@@ -35,7 +35,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@Valid @PathVariable Long itemId,
-                                             @RequestBody ItemDtoInput dto,
+                                             @RequestBody ItemDto dto,
                                              @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на обновление вещи с id = {} у пользователя с id = {}", itemId, userId);
         return itemClient.updateItem(itemId, dto, userId);

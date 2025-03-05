@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.request.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentDto {
+public class ItemRequestDto {
     @NotEmpty
-    String text;
+    String description;
 }

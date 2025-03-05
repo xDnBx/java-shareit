@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingState;
 
 @Slf4j
 @RestController
@@ -26,7 +27,7 @@ public class BookingController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Object> createBooking(@Valid @RequestBody BookItemRequestDto requestDto,
+	public ResponseEntity<Object> createBooking(@Valid @RequestBody BookingDto requestDto,
 												@RequestHeader("X-Sharer-User-Id") Long userId) {
 		log.info("Creating booking {}, userId={}", requestDto, userId);
 		return bookingClient.createBooking(userId, requestDto);
@@ -55,7 +56,7 @@ public class BookingController {
 	}
 
 	@GetMapping("/owner")
-	public ResponseEntity<Object> getBookingsByOwner(@RequestParam(defaultValue = "ALL") String state,
+	public ResponseEntity<Object> getBookingsByOwner(@RequestParam(defaultValue = "ALL") BookingState state,
 													 @RequestHeader("X-Sharer-User-Id") Long userId) {
 		log.info("Запрос на получение списка бронирований владельца с id = {} с параметром '{}'", userId, state);
 		return bookingClient.getBookingsByOwner(userId, state);
