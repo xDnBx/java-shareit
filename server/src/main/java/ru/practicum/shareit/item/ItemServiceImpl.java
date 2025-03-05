@@ -142,6 +142,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentDto createComment(Long itemId, Long userId, CommentDto dto) {
         User user = getUserById(userId);
         Item item = checkItem(itemId);

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemMapper;
@@ -32,6 +33,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public ItemRequestDto createItemRequest(Long userId, ItemRequestDtoInput dto) {
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(dto, getUserById(userId));
         itemRequest.setCreated(LocalDateTime.now());
