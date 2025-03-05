@@ -24,7 +24,7 @@ CREATE TABLE items (
     description VARCHAR NOT NULL,
     is_available BOOLEAN NOT NULL DEFAULT TRUE,
     owner_id BIGINT NOT NULL,
-    request_id BIGINT NOT NULL,
+    request_id BIGINT,
     FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE RESTRICT,
     FOREIGN KEY (request_id) REFERENCES requests (id) ON DELETE RESTRICT
 );

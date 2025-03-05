@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoInput;
+import ru.practicum.shareit.item.dto.ItemDtoRequest;
 
 import java.util.Collection;
 
@@ -29,8 +30,8 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto createItem(@Valid @RequestBody ItemDtoInput dto,
-                              @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ItemDtoRequest createItem(@Valid @RequestBody ItemDtoInput dto,
+                                     @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Запрос на добавление новой вещи: {} пользователю с id = {}", dto.getName(), userId);
         return itemService.createItem(userId, dto);
     }

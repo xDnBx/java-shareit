@@ -3,11 +3,13 @@ package ru.practicum.shareit.request;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.CommentRepository;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoInput;
 import ru.practicum.shareit.user.User;
@@ -15,6 +17,11 @@ import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,14 +30,44 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final BookingRepository bookingRepository;
-    private final CommentRepository commentRepository;
 
     @Override
     public ItemRequestDto createItemRequest(Long userId, ItemRequestDtoInput dto) {
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(dto, getUserById(userId));
         itemRequest.setCreated(LocalDateTime.now());
-        return ItemRequestMapper.toItemRequestDto(itemRequestRepository.save(itemRequest), userId, new ArrayList<>());
+        return ItemRequestMapper.toItemRequestDto(itemRequestRepository.save(itemRequest), new ArrayList<>());
+    }
+
+    @Override
+    public Collection<ItemRequestDto> getAllItemRequestsByRequestor(Long userId){
+        List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestorIdOrderByCreatedDesc(userId);
+        List<Item> items = itemRepository.findAllByItemRequestIdIn(itemRequests.stream()
+                        .map(ItemRequest::getId).toList());
+        List<ItemDtoRequest> answers = items.stream().map(ItemMapper::toItemDtoRequest).toList();
+
+        Map<Long, List<ItemDtoRequest>> groupedAnswers = answers.stream()
+                .collect(Collectors.groupingBy(ItemDtoRequest::getRequestId));
+
+        return itemRequests.stream()
+                .map(itemRequest -> ItemRequestMapper.toItemRequestDto(itemRequest,
+                        groupedAnswers.getOrDefault(itemRequest.getId(), Collections.emptyList()))).toList();
+    }
+
+    @Override
+    public Collection<ItemRequestDto> getAllItemRequests(){
+        Sort sort = Sort.by(Sort.Direction.DESC, "created");
+        return itemRequestRepository.findAll(sort).stream()
+                .map(itemRequest -> ItemRequestMapper.toItemRequestDto(itemRequest, new ArrayList<>()))
+                .toList();
+    }
+
+    @Override
+    public ItemRequestDto getItemRequestById(Long requestId){
+        ItemRequest itemRequest = itemRequestRepository.findById(requestId)
+                .orElseThrow(() -> new NotFoundException("Запрос с id = " + requestId + " не найден"));
+        List<ItemDtoRequest> answers = itemRepository.findAllByItemRequestIdIn(List.of(requestId)).stream()
+                .map(ItemMapper::toItemDtoRequest).toList();
+        return ItemRequestMapper.toItemRequestDto(itemRequest, answers);
     }
 
     private User getUserById(Long id) {
