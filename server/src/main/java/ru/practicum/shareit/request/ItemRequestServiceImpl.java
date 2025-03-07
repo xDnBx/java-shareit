@@ -41,7 +41,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public Collection<ItemRequestDto> getAllItemRequestsByRequestor(Long userId){
+    public Collection<ItemRequestDto> getAllItemRequestsByRequestor(Long userId) {
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestorIdOrderByCreatedDesc(userId);
         List<Item> items = itemRepository.findAllByItemRequestIdIn(itemRequests.stream()
                         .map(ItemRequest::getId).toList());
@@ -56,7 +56,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public Collection<ItemRequestDto> getAllItemRequests(){
+    public Collection<ItemRequestDto> getAllItemRequests() {
         Sort sort = Sort.by(Sort.Direction.DESC, "created");
         return itemRequestRepository.findAll(sort).stream()
                 .map(itemRequest -> ItemRequestMapper.toItemRequestDto(itemRequest, new ArrayList<>()))
@@ -64,7 +64,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto getItemRequestById(Long requestId){
+    public ItemRequestDto getItemRequestById(Long requestId) {
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("Запрос с id = " + requestId + " не найден"));
         List<ItemDtoRequest> answers = itemRepository.findAllByItemRequestIdIn(List.of(requestId)).stream()
