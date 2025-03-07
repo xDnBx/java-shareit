@@ -45,21 +45,21 @@ class UserControllerTest {
     @Test
     void shouldReturnOkWhenGetAllUsers() throws Exception {
         user1.setId(2L);
-        List<UserDto> items = List.of(user2, user1);
+        List<UserDto> users = List.of(user2, user1);
 
-        when(userService.getAllUsers()).thenReturn(items);
+        when(userService.getAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/users")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Yandex"))
                 .andExpect(jsonPath("$[1].email").value("yandex@practicum.ru"));
     }
 
     @Test
-    void shouldReturnOkWhenCreateUser() throws Exception {
+    void shouldReturnCreatedWhenCreateUser() throws Exception {
         user2 = UserDto.builder().id(1L).name("Yandex").email("yandex@practicum.ru").build();
 
         when(userService.createUser(user1)).thenReturn(user2);
@@ -68,7 +68,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user1)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Yandex"))
                 .andExpect(jsonPath("$.email").value("yandex@practicum.ru"));
     }
@@ -81,7 +81,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user1)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Yandex2"))
                 .andExpect(jsonPath("$.email").value("yandex2@practicum.ru"));
     }
@@ -93,13 +93,13 @@ class UserControllerTest {
         mockMvc.perform(get("/users/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Yandex2"))
                 .andExpect(jsonPath("$.email").value("yandex2@practicum.ru"));
     }
 
     @Test
-    void shouldReturnOkWhenDeleteUser() throws Exception {
+    void shouldReturnNoContentWhenDeleteUser() throws Exception {
         doNothing().when(userService).deleteUser(1L);
 
         mockMvc.perform(delete("/users/1")

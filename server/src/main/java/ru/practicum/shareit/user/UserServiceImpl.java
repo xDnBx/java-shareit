@@ -40,10 +40,10 @@ public class UserServiceImpl implements UserService {
         User user = UserMapper.toUser(getUserById(id));
         log.debug("Обновление пользователя с id = {}", id);
         if (dto.getName() != null && !dto.getName().isBlank()) {
-            checkEmail(dto);
             user.setName(dto.getName());
         }
         if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            checkEmail(dto);
             user.setEmail(dto.getEmail());
         }
         return UserMapper.toUserDto(userRepository.save(user));

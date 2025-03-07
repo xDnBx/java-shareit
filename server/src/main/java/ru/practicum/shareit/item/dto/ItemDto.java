@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.user.User;
 
 import java.util.Collection;
 
@@ -17,7 +16,7 @@ public class ItemDto {
     String name;
     String description;
     Boolean available;
-    User owner;
+    Long ownerId;
     BookingDto lastBooking;
     BookingDto nextBooking;
     Collection<CommentDto> comments;
