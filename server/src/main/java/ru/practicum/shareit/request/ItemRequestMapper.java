@@ -20,6 +20,15 @@ public class ItemRequestMapper {
                 .build();
     }
 
+    public ItemRequestDto toItemRequestDto(ItemRequest itemRequest) {
+        return ItemRequestDto.builder()
+                .id(itemRequest.getId())
+                .description(itemRequest.getDescription())
+                .requestorId(itemRequest.getRequestor().getId())
+                .created(itemRequest.getCreated())
+                .build();
+    }
+
     public ItemRequest toItemRequest(ItemRequestDtoInput dto, User requestor) {
         return ItemRequest.builder()
                 .description(dto.getDescription())

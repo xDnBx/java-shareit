@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UserServiceImplTest {
 
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
 
     static UserDto user1;
     static UserDto user2;
@@ -60,24 +60,46 @@ class UserServiceImplTest {
     @Test
      void shouldThrowExceptionWhenEmailIsDuplicateWhenCreateUser() {
         userService.createUser(user1);
-        UserDto user = UserDto.builder().name("Yandex2").email("yandex@practicum.ru").build();
+        UserDto newUser = UserDto.builder().name("Yandex2").email("yandex@practicum.ru").build();
 
-        assertThatThrownBy(() -> userService.createUser(user)).isInstanceOf(DuplicatedDataException.class);
+        assertThatThrownBy(() -> userService.createUser(newUser)).isInstanceOf(DuplicatedDataException.class);
     }
 
     @Test
-    void shouldThrowExceptionWhenidIsNull() {
+    void shouldThrowExceptionWhenIdIsNull() {
         assertThatThrownBy(() -> userService.getUserById(user1.getId())).isInstanceOf(ValidationException.class);
     }
 
     @Test
     void shouldUpdateUser() {
-        userService.createUser(user1);
-        UserDto updateUser = userService.updateUser(2L, user2);
+        UserDto user = userService.createUser(user1);
+        UserDto updateUser = userService.updateUser(user.getId(), user2);
 
-        assertThat(updateUser.getId()).isEqualTo(2L);
-        assertThat(updateUser.getName()).isEqualTo("Yandex2");
-        assertThat(updateUser.getEmail()).isEqualTo("yandex2@practicum.ru");
+        assertThat(updateUser.getId()).isEqualTo(user.getId());
+        assertThat(updateUser.getName()).isEqualTo(user2.getName());
+        assertThat(updateUser.getEmail()).isEqualTo(user2.getEmail());
+    }
+
+    @Test
+    void shouldUpdateUserNameIsNull() {
+        UserDto user = userService.createUser(user1);
+        UserDto user3 = UserDto.builder().email("yandex2@practicum.ru").build();
+        UserDto updateUser = userService.updateUser(user.getId(), user3);
+
+        assertThat(updateUser.getId()).isEqualTo(user.getId());
+        assertThat(updateUser.getName()).isEqualTo(user.getName());
+        assertThat(updateUser.getEmail()).isEqualTo(user3.getEmail());
+    }
+
+    @Test
+    void shouldUpdateUserEmailIsNull() {
+        UserDto user = userService.createUser(user1);
+        UserDto user3 = UserDto.builder().name("Yandex2").build();
+        UserDto updateUser = userService.updateUser(user.getId(), user3);
+
+        assertThat(updateUser.getId()).isEqualTo(user.getId());
+        assertThat(updateUser.getName()).isEqualTo(user3.getName());
+        assertThat(updateUser.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test

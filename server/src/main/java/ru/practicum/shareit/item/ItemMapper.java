@@ -31,6 +31,21 @@ public class ItemMapper {
     }
 
     public ItemDto toItemDtoBooking(Item item, BookingDto lastBooking, BookingDto nextBooking,
+                                    Collection<CommentDto> comments, Long requestId) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .ownerId(item.getOwner().getId())
+                .lastBooking(lastBooking)
+                .nextBooking(nextBooking)
+                .comments(comments)
+                .requestId(requestId)
+                .build();
+    }
+
+    public ItemDto toItemDtoBooking(Item item, BookingDto lastBooking, BookingDto nextBooking,
                                     Collection<CommentDto> comments) {
         return ItemDto.builder()
                 .id(item.getId())
@@ -55,14 +70,14 @@ public class ItemMapper {
                 .build();
     }
 
-    public ItemDtoRequest toItemDtoRequest(Item item, Long itemRquestId) {
+    public ItemDtoRequest toItemDtoRequest(Item item, Long itemRequestId) {
         return ItemDtoRequest.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .ownerId(item.getOwner().getId())
-                .requestId(itemRquestId)
+                .requestId(itemRequestId)
                 .build();
     }
 }

@@ -17,7 +17,6 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +36,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto createItemRequest(Long userId, ItemRequestDtoInput dto) {
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(dto, getUserById(userId));
         itemRequest.setCreated(LocalDateTime.now());
-        return ItemRequestMapper.toItemRequestDto(itemRequestRepository.save(itemRequest), new ArrayList<>());
+        return ItemRequestMapper.toItemRequestDto(itemRequestRepository.save(itemRequest));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public Collection<ItemRequestDto> getAllItemRequests() {
         Sort sort = Sort.by(Sort.Direction.DESC, "created");
         return itemRequestRepository.findAll(sort).stream()
-                .map(itemRequest -> ItemRequestMapper.toItemRequestDto(itemRequest, new ArrayList<>()))
+                .map(ItemRequestMapper::toItemRequestDto)
                 .toList();
     }
 

@@ -92,8 +92,12 @@ public class ItemServiceImpl implements ItemService {
                 .orElse(null);
         Collection<CommentDto> comments = commentRepository.findAllByItemId(itemId).stream()
                 .map(CommentMapper::toCommentDto).toList();
+        Long requestId = null;
+        if (item.getItemRequest() != null) {
+            requestId = item.getItemRequest().getId();
+        }
 
-        return ItemMapper.toItemDtoBooking(item, lastBooking, nextBooking, comments);
+        return ItemMapper.toItemDtoBooking(item, lastBooking, nextBooking, comments, requestId);
     }
 
     @Override

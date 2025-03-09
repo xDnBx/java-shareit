@@ -35,7 +35,7 @@ class ItemControllerTest {
     ObjectMapper objectMapper;
 
     @MockBean
-    ItemServiceImpl itemService;
+    ItemService itemService;
 
     ItemDtoInput item1;
     ItemDto item2;
@@ -156,7 +156,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void shouldReturnOkWhenCreateComment() throws Exception {
+    void shouldReturnCreatedWhenCreateComment() throws Exception {
         CommentDto comment = CommentDto.builder().text("YandexPracticum").build();
         CommentDto newComment = CommentDto.builder()
                 .id(1L)
