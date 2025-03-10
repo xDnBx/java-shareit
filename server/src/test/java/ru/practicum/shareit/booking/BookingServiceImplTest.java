@@ -111,8 +111,8 @@ public class BookingServiceImplTest {
         ItemDtoRequest item = itemService.createItem(user3.getId(), item1);
         BookingDtoInput booking = BookingDtoInput.builder()
                 .itemId(item.getId())
-                .start(LocalDateTime.now())
-                .end(LocalDateTime.now())
+                .start(LocalDateTime.now().plusHours(2))
+                .end(LocalDateTime.now().plusHours(1))
                 .build();
 
         assertThatThrownBy(() -> bookingService.createBooking(user4.getId(), booking))
