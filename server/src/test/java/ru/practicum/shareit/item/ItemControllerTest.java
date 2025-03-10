@@ -39,6 +39,7 @@ class ItemControllerTest {
 
     ItemDtoInput item1;
     ItemDto item2;
+    ItemDto item3;
 
     @BeforeEach
     void beforeEach() {
@@ -50,11 +51,18 @@ class ItemControllerTest {
                 .available(true)
                 .ownerId(1L)
                 .build();
+        item3 = ItemDto.builder()
+                .id(2L)
+                .name("Yandex2")
+                .description("YandexPracticum2")
+                .available(true)
+                .ownerId(1L)
+                .build();
     }
 
     @Test
     void shouldReturnCreatedWhenCreateItem() throws Exception {
-        ItemDtoRequest item3 = ItemDtoRequest.builder()
+        ItemDtoRequest item4 = ItemDtoRequest.builder()
                 .id(1L)
                 .name("Yandex")
                 .description("YandexPracticum")
@@ -62,7 +70,7 @@ class ItemControllerTest {
                 .ownerId(1L)
                 .build();
 
-        when(itemService.createItem(1L, item1)).thenReturn(item3);
+        when(itemService.createItem(1L, item1)).thenReturn(item4);
 
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", 1)
@@ -98,8 +106,7 @@ class ItemControllerTest {
 
         mockMvc.perform(get("/items/1")
                         .header("X-Sharer-User-Id", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(item1)))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Yandex"))
@@ -110,14 +117,6 @@ class ItemControllerTest {
 
     @Test
     void shouldReturnOkWhenGetAllItemsByOwner() throws Exception {
-        ItemDto item3 = ItemDto.builder()
-                .id(2L)
-                .name("Yandex2")
-                .description("YandexPracticum2")
-                .available(true)
-                .ownerId(1L)
-                .build();
-
         when(itemService.getAllItemsByOwner(1L)).thenReturn(List.of(item2, item3));
 
         mockMvc.perform(get("/items")
@@ -133,14 +132,6 @@ class ItemControllerTest {
 
     @Test
     void shouldReturnOkWhenSearchItems() throws Exception {
-        ItemDto item3 = ItemDto.builder()
-                .id(2L)
-                .name("Yandex2")
-                .description("YandexPracticum2")
-                .available(true)
-                .ownerId(1L)
-                .build();
-
         when(itemService.searchItems("yandex")).thenReturn(List.of(item2, item3));
 
         mockMvc.perform(get("/items/search")
