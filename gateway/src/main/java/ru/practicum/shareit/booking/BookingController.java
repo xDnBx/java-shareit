@@ -49,7 +49,7 @@ public class BookingController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Object> getBookingsByUser(@RequestParam(defaultValue = "ALL") String state,
+	public ResponseEntity<Object> getBookingsByUser(@RequestParam(defaultValue = "ALL") BookingState state,
 													@RequestHeader("X-Sharer-User-Id") Long userId) {
 		log.info("Запрос на получение списка бронирований пользователя с id = {} с параметром '{}'", userId, state);
 		return bookingClient.getBookingsByUser(userId, state);
